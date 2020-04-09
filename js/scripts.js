@@ -4,7 +4,6 @@ var player2;
 
 function Player(){
   this.name = name,
-  this.currentId = 0;
   this.roll = 0,
   this.tempScore = 0,
   this.totalScore = 0;
@@ -15,10 +14,7 @@ var toss = function(){
   return randomDice;
 }
 
-Player.prototype.assingId = function(){
-  this.currentId += 1;
-  return this.currentId;
-}
+
 
 Player.prototype.scoreCheck = function() {
   
@@ -34,7 +30,16 @@ Player.prototype.scoreCheck = function() {
 Player.prototype.hold = function(){
   this.totalScore += this.tempScore;
   this.tempScore = 0 ;
+  // console.log(this.totalScore += this.tempScore);
   alert(this.name + ", your turn is over, pass the mouse!");
+}
+
+Player.prototype.showWinner = function(){
+
+  if (this.totalScore >= 15){
+    alert(this.name + " you win!");
+
+  } 
 }
 
 
@@ -57,20 +62,14 @@ $(document).ready(function(){
     player2.name = player2Input;
     $(".player2Name").text(player2.name);
 
-    //set id
-    player1.id = player1.assingId();
-    console.log(player1.id)
-    player2.id = player2.assingId();
-    console.log(player2.id)
-    
-
     //get random number for player1
     $("#player1-roll").click(function(event){
       player1.roll = toss();
-      $(".die-roll-1").text( player1.roll)
+      $(".die-roll-1").text( player1.roll);
+      
        player1.scoreCheck();
-      $(".round-total-1").text(player1.tempScore)
-
+      $(".round-total-1").text(player1.tempScore);
+        player1.showWinner();
       if( player1.roll === 1){
         $("#player1-roll").attr('disabled','disabled');
         $("#player1-hold").attr('disabled','disabled');
@@ -84,24 +83,26 @@ $(document).ready(function(){
     // hold for player1 
     $("#player1-hold").click(function(){
        player1.hold();
+       $(".round-total-1").empty();
+       $(".die-roll-1").empty();
+      //  $(".round-total-2").show();
+      //  $(".die-roll-2").show();
        $(".total-score-1").text(player1.totalScore);
        $("#player2-roll").removeAttr('disabled');
        $("#player2-hold").removeAttr('disabled');
        //disable player1 
        $("#player1-roll").attr('disabled','disabled');
        $("#player1-hold").attr('disabled','disabled');
+       player1.showWinner();
     });
 
     //player 2
     $("#player2-roll").click(function(event){
       player2.roll = toss();
-
-     
-
       $(".die-roll-2").text( player2.roll)
        player2.scoreCheck();
       $(".round-total-2").text(player2.tempScore)
-
+      player2.showWinner();
       if( player2.roll === 1){
         $("#player2-roll").attr('disabled','disabled');
         $("#player2-hold").attr('disabled','disabled');
@@ -109,17 +110,22 @@ $(document).ready(function(){
         $("#player1-hold").removeAttr('disabled');
  
       } 
-
+      
     });
 
     $("#player2-hold").click(function(){
        player2.hold();
+       $(".round-total-2").empty();
+       $(".die-roll-2").empty();
+      //  $(".round-total-1").show();
+      //  $(".die-roll-1").show();
        $(".total-score-2").text(player2.totalScore);
        $("#player1-roll").removeAttr('disabled');
        $("#player1-hold").removeAttr('disabled');
        //disable player2
        $("#player2-roll").attr('disabled','disabled');
        $("#player2-hold").attr('disabled','disabled');
+       player2.showWinner();
        
     });
 
@@ -128,9 +134,4 @@ $(document).ready(function(){
   });
 });
 
-// $("#player1-roll").click(function(event){
-//   event.preventDefault();
-//   var diceNumber = Math.floor(Math.random()*6)+1;
-//   $("#player1-dice").attr("src","img/dice_"+diceNumber+".jpg");
-  
-// });
+
